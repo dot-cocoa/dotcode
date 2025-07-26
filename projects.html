@@ -3,10 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>cocoa pc | My Projects</title>
+<title>Dotcode Projects</title>
+<meta property="og:title" content="dotcode Profile" />
+<meta property="og:description" content="高校生Developer dotcodeプロフィールサイト。Python, Rust, Swiftを主に扱っています。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.dotcode.jp/" />
+<meta property="og:image" content="" />
+<meta property="og:image:alt" content="dev." />
+<meta property="og:site_name" content="dotcode.jp" />
+<meta property="og:locale" content="ja_JP" />
 
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet" />
-
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
     ::selection {
@@ -30,7 +37,7 @@
         position: relative;
         cursor: default;
         filter: blur(0px) contrast(100%);
-        transition: filter 0.3s ease-out;
+        transition: filter 0.3s ease-out, background-color 0.6s ease;
     }
 
     body.loaded {
@@ -426,10 +433,8 @@
 <header>
     <nav>
         <a href="index.html" class="nav-link" data-target="home">Home</a>
-        <a href="#" class="nav-link active" data-target="projects">Projects</a>
-        <div class="tooltip-container">
-            <a target="_blank" rel="noopener noreferrer">SNS</a>
-            <span class="tooltip">各SNSへのリンクはこちら</span>
+        <a href="projects.html" class="nav-link active" data-target="projects">Projects</a>
+        <a href="sns.html" class="nav-link" data-target="sns">SNS</a>
         </div>
     </nav>
     <div id="scroll-progress-bar"></div>
@@ -482,12 +487,9 @@
                     </a>
                     </div>
             </div>
-
-
             </div>
     </section>
 </main>
-
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -517,25 +519,6 @@
             }
         });
 
-        const links = document.querySelectorAll('nav a.nav-link');
-        links.forEach(link => {
-            link.addEventListener('click', e => {
-                const targetHref = link.getAttribute('href');
-                if (targetHref.startsWith('http') || targetHref.startsWith('//')) {
-                    return;
-                }
-                e.preventDefault();
-
-                if (window.location.pathname.endsWith(targetHref)) {
-                    return;
-                }
-
-                document.body.style.opacity = 0;
-                setTimeout(() => {
-                    window.location.href = targetHref;
-                }, 600);
-            });
-        });
 
         document.querySelectorAll('.hover-tilt').forEach(element => {
             element.addEventListener('mousemove', (e) => {
@@ -547,7 +530,7 @@
                 const rotateY = ((x - midX) / midX) * 8;
                 const rotateX = ((midY - y) / midY) * 8;
                 element.style.setProperty('--rotateX', `${rotateX}deg`);
-                element.style.setProperty('--rotateY', `${rotateY}deg`);
+                element.style.setProperty('--rotateY', `${rotateY}Ydeg`);
             });
             element.addEventListener('mouseleave', () => {
                 element.style.setProperty('--rotateX', `0deg`);
@@ -680,31 +663,30 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
         animateParticles();
-    });
 
-    const sections = document.querySelectorAll('.page-section');
-    const colors = ['#0a0a0a', '#100a18', '#0a151f', '#18120a'];
+        const sections = document.querySelectorAll('.page-section');
+        const colors = ['#0a0a0a', '#100a18', '#0a151f', '#18120a'];
 
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.4
-    };
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.4
+        };
 
-    const sectionObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const sectionIndex = Array.from(sections).indexOf(entry.target);
-                if (colors[sectionIndex]) {
-                    document.body.style.transition = 'background-color 0.6s ease';
-                    document.body.style.backgroundColor = colors[sectionIndex];
+        const sectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const sectionIndex = Array.from(sections).indexOf(entry.target);
+                    if (colors[sectionIndex]) {
+                        document.body.style.backgroundColor = colors[sectionIndex];
+                    }
                 }
-            }
-        });
-    }, observerOptions);
+            });
+        }, observerOptions);
 
-    sections.forEach(section => {
-        sectionObserver.observe(section);
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
     });
 </script>
 
