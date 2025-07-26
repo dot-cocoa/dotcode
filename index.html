@@ -562,15 +562,14 @@
             link.addEventListener('click', e => {
                 const targetHref = link.getAttribute('href');
 
-                // 外部サイトや新しいタブで開くことを意図したリンクはそのまま処理
                 if (targetHref.startsWith('http') || targetHref.startsWith('//') || link.getAttribute('target') === '_blank') {
                     return;
                 }
 
-                e.preventDefault(); // デフォルトのリンク動作をキャンセル
-
-                // 現在のページと同じ場合は何もしない
-                if (window.location.pathname.endsWith(targetHref)) {
+                e.preventDefault(); 
+                const currentPath = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' ? 'index.html' : window.location.pathname;
+                const clickedPath = targetHref.endsWith('index.html') || targetHref === '/' ? 'index.html' : targetHref;
+                if (currentPath.includes(clickedPath)) {
                     return;
                 }
 
