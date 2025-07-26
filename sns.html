@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#0a0a10] text-white">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dotcode SNS</title>
+
+<meta property="og:title" content="dotcode Profile" />
+<meta property="og:description" content="高校生Developer dotcodeプロフィールサイト。Python, Rust, Swiftを主に扱っています。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.dotcode.jp/" />
+<meta property="og:image" content="" />
+<meta property="og:image:alt" content="dev." />
+<meta property="og:site_name" content="dotcode.jp" />
+<meta property="og:locale" content="ja_JP" />
+
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    ::selection {
+        background-color: #ff8faa;
+        color: #0a0a0a;
+    }
+    ::-moz-selection {
+        background-color: #ff8faa;
+        color: #0a0a0a;
+    }
+
+    body {
+        font-family: 'JetBrains Mono', monospace;
+        background-color: #0a0a0a;
+        color: #eee;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+        opacity: 0;
+        transition: opacity 1s ease-out;
+        position: relative;
+        cursor: default;
+    }
+
+    body.loaded {
+        opacity: 1;
+    }
+
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      backdrop-filter: saturate(180%) blur(10px);
+      background: rgba(10, 10, 10, 0.4);
+      border-bottom: 1.5px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 3rem;
+      z-index: 1000;
+    }
+
+    #scroll-progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ff8faa, #a9f0ff);
+        width: 0%;
+        transition: width 0.05s linear;
+        z-index: 1001;
+    }
+
+    nav {
+        display: flex;
+        gap: 2.5rem;
+    }
+    nav a {
+        color: #ddd;
+        font-weight: 600;
+        font-size: 1.1rem;
+        position: relative;
+        text-decoration: none;
+        letter-spacing: 0.1em;
+        user-select: none;
+        transition: color 0.2s ease, transform 0.15s ease;
+        cursor: pointer;
+    }
+    nav a::after {
+        content: "";
+        position: absolute;
+        left: 0; bottom: -6px;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ff8faa, #a9f0ff);
+        border-radius: 10px;
+        transition: width 0.2s ease;
+        background-size: 200% 100%;
+    }
+    nav a:hover,
+    nav a.active {
+        color: #fff;
+        transform: translateY(-5px);
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    nav a:hover::after,
+    nav a.active::after {
+        width: 100%;
+        animation: gradientFlow 0.8s linear infinite;
+    }
+
+    @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+    }
+
+    main {
+        padding: 90px 2rem 4rem;
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .main-title {
+        font-weight: 900;
+        font-size: clamp(3rem, 7vw, 5.5rem);
+        background: linear-gradient(90deg, #ff8faa, #fff, #a9f0ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        position: relative;
+        text-transform: lowercase;
+        letter-spacing: 0.15em;
+        user-select: none;
+        cursor: default;
+        filter: drop-shadow(0 0 5px rgba(170, 170, 170, 0.5));
+    }
+    .main-title::before,
+    .main-title::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        width: 100%;
+        overflow: hidden;
+        opacity: 0.15;
+        clip-path: polygon(0 0, 100% 0, 100% 40%, 0 40%);
+        animation: glitchTop 1.5s infinite linear alternate-reverse;
+    }
+    .main-title::after {
+        clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+        animation: glitchBottom 1.5s infinite linear alternate-reverse;
+        opacity: 0.1;
+    }
+
+    @keyframes glitchTop {
+        0% { transform: translate(-1.5px, -1.5px); }
+        50% { transform: translate(1.5px, 1.5px); }
+        100% { transform: translate(-1.5px, -1.5px); }
+    }
+    @keyframes glitchBottom {
+        0% { transform: translate(1.5px, 1.5px); }
+        50% { transform: translate(-1.5px, -1.5px); }
+        100% { transform: translate(1.5px, 1.5px); }
+    }
+
+    section.page-section {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        will-change: opacity, transform;
+        pointer-events: none;
+        margin-bottom: 4rem;
+        transition: background-color 0.5s ease;
+    }
+    section.page-section.active {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    h2::after {
+        content: '';
+        display: block;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #ff8faa, #a9f0ff);
+        margin: 0.5rem auto 0;
+        transition: width 0.3s ease-out;
+    }
+    section.page-section.active h2::after {
+        width: 100%;
+    }
+
+    ul.timeline {
+        list-style: none;
+        padding-left: 0;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    ul.timeline li {
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-left: 3rem;
+        border-left: 3px solid #888;
+        opacity: 0;
+        transform: translateX(-20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    ul.timeline li.visible {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    ul.timeline li:nth-child(1) { transition-delay: 0.05s; }
+    ul.timeline li:nth-child(2) { transition-delay: 0.1s; }
+    ul.timeline li:nth-child(3) { transition-delay: 0.15s; }
+    ul.timeline li:nth-child(4) { transition-delay: 0.2s; }
+    ul.timeline li:nth-child(5) { transition-delay: 0.25s; }
+    ul.timeline li:nth-child(6) { transition-delay: 0.3s; }
+    ul.timeline li::before {
+        content: attr(data-year);
+        position: absolute;
+        left: -3.6rem;
+        top: 0;
+        color: #ccc;
+        font-weight: 700;
+        font-size: 1.1rem;
+        user-select: none;
+    }
+
+    .marquee-container {
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+        padding: 1.5rem 0;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
+    }
+
+    .marquee {
+        display: inline-flex;
+        gap: 2rem;
+        animation: marqueeScrollRevised 15s linear infinite;
+        padding-right: 2rem;
+    }
+
+    .marquee:hover {
+        animation-play-state: paused;
+    }
+
+    @keyframes marqueeScrollRevised {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(calc(-100% - 2rem)); }
+    }
+
+    .icon {
+        flex: 0 0 auto;
+        width: 44px;
+        height: 44px;
+        filter: brightness(1) invert(1) saturate(1.1);
+        cursor: pointer;
+        user-select: none;
+        transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .icon:hover {
+        transform: scale(1.2) rotate(30deg);
+        filter: drop-shadow(0 0 8px #a9f0ff) saturate(1.5) brightness(1.5);
+    }
+    .icon.jump-effect {
+        animation: iconJump 0.2s ease-out;
+    }
+    @keyframes iconJump {
+        0% { transform: translateY(0) scale(1.2) rotate(30deg); }
+        50% { transform: translateY(-8px) scale(1.25) rotate(45deg); }
+        100% { transform: translateY(0) scale(1.2) rotate(30deg); }
+    }
+
+    .hover-tilt {
+        transition: transform 0.15s ease-out;
+        transform-style: preserve-3d;
+    }
+    .hover-tilt:hover {
+        transform: rotateX(var(--rotateX, 0deg)) rotateY(var(--rotateY, 0deg));
+    }
+
+    h2 {
+        color: #eee;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1.9rem;
+    }
+    h3 {
+        color: #ccc;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+    }
+    p, li {
+        color: #ddd;
+        font-size: 1.125rem;
+        line-height: 1.75;
+    }
+
+    .links {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        font-weight: 600;
+        font-size: 1.15rem;
+        color: #ddd;
+        user-select: none;
+    }
+    .links a {
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .links a:hover {
+        color: #fff;
+    }
+
+    footer {
+        padding: 2.5rem 1rem;
+        font-size: 0.85rem;
+        color: #555;
+        text-align: center;
+        user-select: none;
+    }
+    footer .heart-icon {
+        display: inline-block;
+        animation: pulseHeart 1s infinite ease-in-out;
+    }
+    @keyframes pulseHeart {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+    }
+
+    #background-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+        opacity: 0.1;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #0a0a0a;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        transition: opacity 0.6s ease-out;
+    }
+    .loading-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .loading-spinner {
+        border: 5px solid rgba(255, 255, 255, 0.2);
+        border-top: 5px solid #a9f0ff;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+    }
+    .tooltip {
+        visibility: hidden;
+        opacity: 0;
+        background-color: rgba(20, 20, 20, 0.95);
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 10px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%) translateY(5px);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        min-width: 150px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        white-space: normal;
+    }
+    .tooltip-container:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    .tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: rgba(20, 20, 20, 0.95) transparent transparent transparent;
+    }
+
+    body.distorted {
+        transition: filter 0.3s ease-out;
+    }
+    body {
+        filter: blur(0px) contrast(100%);
+        transition: filter 0.3s ease-out;
+    }
+
+    @media (max-width: 600px) {
+        header {
+            padding: 0 1rem;
+            height: 50px;
+        }
+        nav {
+            gap: 1.5rem;
+        }
+        .main-title {
+            font-size: 3.5rem;
+            letter-spacing: 0.1em;
+        }
+        ul.timeline li::before {
+            left: -2.8rem;
+            font-size: 1rem;
+        }
+        .links {
+            gap: 1.5rem;
+            font-size: 1rem;
+        }
+    }
+</style>
+</head>
+<body class="bg-[#0a0a10]">
+
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<canvas id="background-canvas"></canvas>
+
+<header>
+    <nav>
+        <a href="index.html" class="nav-link" data-target="home">Home</a>
+        <div class="tooltip-container">
+            <a href="projects.html" class="nav-link" data-target="projects">Projects</a>
+            <span class="tooltip">私のプロジェクト一覧はこちら</span>
+        </div>
+        <div class="tooltip-container">
+            <a href="SNS.html" class="nav-link active" data-target="sns">SNS</a>
+            <span class="tooltip">各SNSへのリンクはこちら</span>
+        </div>
+    </nav>
+    <div id="scroll-progress-bar"></div>
+</header>
+
+<main>
+    <section id="sns-content" class="page-section active" tabindex="0" aria-label="Social Media section">
+        <h1 class="main-title" data-text="Socials">Socials</h1>
+
+        <section>
+            <h2>Links for each SNS</h2>
+            <div class="links">
+                <a href="https://discord.com/users/1370653185924010005" target="_blank" rel="noopener noreferrer" class="hover-tilt">
+                    <img src="https://simpleicons.org/icons/discord.svg" alt="Discord" class="icon" />
+                </a>
+                <a href="https://github.com/dot-cocoa" target="_blank" rel="noopener noreferrer" class="hover-tilt">
+                    <img src="https://simpleicons.org/icons/github.svg" alt="GitHub" class="icon" />
+                </a>
+                <a href="https://www.youtube.com/@cocoapc0911" target="_blank" rel="noopener noreferrer" class="hover-tilt">
+                    <img src="https://simpleicons.org/icons/youtube.svg" alt="YouTube" class="icon" />
+                </a>
+            </div>
+        </section>
+    </section>
+</main>
+
+<script>
+    console.log(
+        "%" +
+        "%cなにコンソール見てるんだよ",
+        "color: #a9f0ff; font-weight: bold; font-size: 16px;",
+        "color: #ff8faa; font-size: 14px;"
+    );
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const loadingOverlay = document.getElementById('loading-overlay');
+
+        window.addEventListener('load', () => {
+            loadingOverlay.classList.add('hidden');
+            document.body.classList.add('loaded');
+        });
+
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            const scrollProgress = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('scroll-progress-bar').style.width = `${scrollProgress}%`;
+
+            if (window.scrollY > 150) {
+                document.body.classList.add('distorted');
+            } else {
+                document.body.classList.remove('distorted');
+            }
+        });
+
+        const links = document.querySelectorAll('nav a.nav-link');
+        links.forEach(link => {
+            link.addEventListener('click', e => {
+                const targetHref = link.getAttribute('href');
+
+                if (targetHref.startsWith('http') || targetHref.startsWith('//') || link.getAttribute('target') === '_blank') {
+                    return;
+                }
+
+                e.preventDefault();
+
+                const normalizePath = (path) => {
+                    const cleanPath = path.split('/').pop();
+                    if (cleanPath === '' || cleanPath === '#' || cleanPath === 'index.html') {
+                        return 'index.html';
+                    }
+                    if (cleanPath.endsWith('.html')) {
+                        return cleanPath;
+                    }
+                    if (path.startsWith('#') && path.length > 1) {
+                        return path.substring(1) + '.html'; 
+                    }
+                    return cleanPath;
+                };
+
+                const currentPath = window.location.pathname.split('/').pop();
+                
+                let currentNormalizedLocation;
+                if (currentPath === '') {
+                    currentNormalizedLocation = 'index.html';
+                } else {
+                    currentNormalizedLocation = normalizePath(currentPath);
+                }
+                
+                const clickedNormalizedLocation = normalizePath(targetHref);
+                
+                if (currentNormalizedLocation === clickedNormalizedLocation) {
+                    return;
+                }
+                
+                document.body.style.opacity = 0;
+                setTimeout(() => {
+                    window.location.href = targetHref;
+                }, 600);
+            });
+        });
+
+        document.querySelectorAll('.hover-tilt').forEach(element => {
+            element.addEventListener('mousemove', (e) => {
+                const rect = element.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const midX = rect.width / 2;
+                const midY = rect.height / 2;
+                const rotateY = ((x - midX) / midX) * 8;
+                const rotateX = ((midY - y) / midY) * 8;
+                element.style.setProperty('--rotateX', `${rotateX}deg`);
+                element.style.setProperty('--rotateY', `${rotateY}deg`);
+            });
+            element.addEventListener('mouseleave', () => {
+                element.style.setProperty('--rotateX', `0deg`);
+                element.style.setProperty('--rotateY', `0deg`);
+            });
+        });
+
+        document.addEventListener('copy', (event) => {
+            const selectedText = window.getSelection().toString();
+            if (selectedText.length > 0) {
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.textContent = 'コピーしました!';
+                feedbackDiv.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background-color: rgba(40, 40, 40, 0.9);
+                    color: #fff;
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    font-size: 0.9rem;
+                    opacity: 0;
+                    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+                    transform: translateY(20px);
+                    z-index: 10000;
+                `;
+                document.body.appendChild(feedbackDiv);
+
+                setTimeout(() => {
+                    feedbackDiv.style.opacity = '1';
+                    feedbackDiv.style.transform = 'translateY(0)';
+                }, 50);
+
+                setTimeout(() => {
+                    feedbackDiv.style.opacity = '0';
+                    feedbackDiv.style.transform = 'translateY(20px)';
+                    feedbackDiv.addEventListener('transitionend', () => feedbackDiv.remove());
+                }, 1500);
+            }
+        });
+
+        const canvas = document.getElementById('background-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const numParticles = 80;
+        let mouse = { x: null, y: null };
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.8 + 0.7;
+                this.baseSpeedX = Math.random() * 0.5 - 0.25;
+                this.baseSpeedY = Math.random() * 0.5 - 0.25;
+                this.color = 'rgba(255, 255, 255, 0.4)';
+                this.density = Math.random() * 15 + 1;
+            }
+            update() {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let forceDirectionX = dx / distance;
+                let forceDirectionY = dy / distance;
+                let maxDistance = canvas.width / 3;
+                let force = (maxDistance - distance) / maxDistance;
+
+                if (distance < maxDistance) {
+                    this.x -= forceDirectionX * force * this.density * 0.8;
+                    this.y -= forceDirectionY * force * this.density * 0.8;
+                } else {
+                    this.x += this.baseSpeedX;
+                    this.y += this.baseSpeedY;
+                }
+
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let distance = ((particles[a].x - particles[b].x) ** 2) + ((particles[a].y - particles[b].y) ** 2);
+                    if (distance < (canvas.width / 6) ** 2) {
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.15 - (distance / ((canvas.width / 6) ** 2)) * 0.15})`;
+                        ctx.lineWidth = 1.2;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animateParticles();
+    });
+
+    const sections = document.querySelectorAll('.page-section');  
+    const colors = ['#0a0a10']; 
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.4
+    };
+
+    const sectionObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const sectionIndex = Array.from(sections).indexOf(entry.target);
+                if (colors[sectionIndex]) {
+                    document.body.style.transition = 'background-color 0.6s ease';
+                    document.body.style.backgroundColor = colors[sectionIndex];
+                }
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        sectionObserver.observe(section);
+    });
+</script>
+
+</body>
+</html>
