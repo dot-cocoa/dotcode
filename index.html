@@ -3,13 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>dotcode bio</title>
-<meta property="og:title" content="Dotcode Profile" />
-<meta property="og:description" content="高校生の開発者 Dotcodeのプロフィールサイトです。Python, Rust, Swiftを主に扱っています。" />
+<title>Dotcode Profile</title>
+
+<meta property="og:title" content="dotcode's Futuristic Profile" />
+<meta property="og:description" content="高校生の開発者dotcodeのプロフィールサイトです。Python, Rust, Swiftを主に扱っています。" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.dotcode.jp/" /> <meta property="og:image" content="" /> <meta property="og:image:alt" content="High school developer Dotcode" />
-<meta property="og:site_name" content="dotcode" />
+<meta property="og:url" content="https://www.yourwebsite.com/index.html" />
+<meta property="og:image" content="https://www.yourwebsite.com/og-image.jpg" />
+<meta property="og:image:alt" content="A futuristic profile page for dotcode, a developer." />
+<meta property="og:site_name" content="cocoa pc" />
 <meta property="og:locale" content="ja_JP" />
+
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet" />
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -52,12 +56,6 @@
       justify-content: flex-end;
       padding: 0 3rem;
       z-index: 1000;
-    }
-
-    header.scrolled {
-        background: rgba(10, 10, 10, 0.95);
-        border-bottom: 1.5px solid #888;
-        height: 50px;
     }
 
     #scroll-progress-bar {
@@ -281,7 +279,6 @@
     .hover-tilt:hover {
         transform: rotateX(var(--rotateX, 0deg)) rotateY(var(--rotateY, 0deg));
     }
-
 
     h2 {
         color: #eee;
@@ -523,11 +520,9 @@
     </section>
 </main>
 
-
 <script>
     console.log(
         "%" +
-
         "%cなにコンソール見てるんだよ",
         "color: #a9f0ff; font-weight: bold; font-size: 16px;",
         "color: #ff8faa; font-size: 14px;"
@@ -566,10 +561,17 @@
                     return;
                 }
 
-                e.preventDefault(); 
-                const currentPath = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' ? 'index.html' : window.location.pathname;
-                const clickedPath = targetHref.endsWith('index.html') || targetHref === '/' ? 'index.html' : targetHref;
-                if (currentPath.includes(clickedPath)) {
+                e.preventDefault();
+
+                const normalizePath = (path) => {
+                    const cleanPath = path.split('/').pop();
+                    return cleanPath === '' || cleanPath === 'index.html' ? 'index.html' : cleanPath;
+                };
+
+                const currentNormalizedPath = normalizePath(window.location.pathname);
+                const clickedNormalizedPath = normalizePath(targetHref);
+
+                if (currentNormalizedPath === clickedNormalizedPath) {
                     return;
                 }
 
