@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Dotcode Profile</title>
 
-<meta property="og:title" content="dotcode's Futuristic Profile" />
-<meta property="og:description" content="高校生の開発者dotcodeのプロフィールサイトです。Python, Rust, Swiftを主に扱っています。" />
+<meta property="og:title" content="dotcode Profile" />
+<meta property="og:description" content="高校生Developer dotcodeプロフィールサイト。Python, Rust, Swiftを主に扱っています。" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.yourwebsite.com/index.html" />
-<meta property="og:image" content="https://www.yourwebsite.com/og-image.jpg" />
-<meta property="og:image:alt" content="A futuristic profile page for dotcode, a developer." />
-<meta property="og:site_name" content="cocoa pc" />
+<meta property="og:url" content="https://www.dotcode.jp/" />
+<meta property="og:image" content="" />
+<meta property="og:image:alt" content="dev." />
+<meta property="og:site_name" content="dotcode.jp" />
 <meta property="og:locale" content="ja_JP" />
 
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet" />
@@ -452,13 +452,13 @@
 
 <header>
     <nav>
-        <a href="#" class="nav-link active" data-target="home">Home</a>
+        <a href="index.html" class="nav-link active" data-target="home">Home</a>
         <div class="tooltip-container">
             <a href="projects.html" class="nav-link" data-target="projects">Projects</a>
             <span class="tooltip">私のプロジェクト一覧はこちら</span>
         </div>
         <div class="tooltip-container">
-            <a target="_blank" rel="noopener noreferrer">SNS</a>
+            <a href="sns.html" class="nav-link" data-target="sns">SNS</a>
             <span class="tooltip">各SNSへのリンクはこちら</span>
         </div>
     </nav>
@@ -520,6 +520,7 @@
     </section>
 </main>
 
+
 <script>
     console.log(
         "%" +
@@ -530,16 +531,22 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         const loadingOverlay = document.getElementById('loading-overlay');
+        const scrollProgressBar = document.getElementById('scroll-progress-bar');
+        const navLinks = document.querySelectorAll('nav a.nav-link');
+        const timelineItems = document.querySelectorAll('ul.timeline li');
+        const skillIcons = document.querySelectorAll('.icon');
+        const hoverTiltElements = document.querySelectorAll('.hover-tilt');
+        const backgroundCanvas = document.getElementById('background-canvas');
+        const ctx = backgroundCanvas.getContext('2d');
 
         window.addEventListener('load', () => {
             loadingOverlay.classList.add('hidden');
             document.body.classList.add('loaded');
         });
 
-        const header = document.querySelector('header');
         window.addEventListener('scroll', () => {
             const scrollProgress = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-            document.getElementById('scroll-progress-bar').style.width = `${scrollProgress}%`;
+            scrollProgressBar.style.width = `${scrollProgress}%`;
 
             if (window.scrollY > 150) {
                 document.body.classList.add('distorted');
@@ -548,44 +555,9 @@
             }
         });
 
-        const links = document.querySelectorAll('nav a.nav-link');
-        const sections = {
-            home: document.getElementById('home'),
-        };
-
-        links.forEach(link => {
-            link.addEventListener('click', e => {
-                const targetHref = link.getAttribute('href');
-
-                if (targetHref.startsWith('http') || targetHref.startsWith('//') || link.getAttribute('target') === '_blank') {
-                    return;
-                }
-
-                e.preventDefault();
-
-                const normalizePath = (path) => {
-                    const cleanPath = path.split('/').pop();
-                    return cleanPath === '' || cleanPath === 'index.html' ? 'index.html' : cleanPath;
-                };
-
-                const currentNormalizedPath = normalizePath(window.location.pathname);
-                const clickedNormalizedPath = normalizePath(targetHref);
-
-                if (currentNormalizedPath === clickedNormalizedPath) {
-                    return;
-                }
-
-                document.body.style.opacity = 0;
-                setTimeout(() => {
-                    window.location.href = targetHref;
-                }, 600);
-            });
-        });
-
         function checkTimelineVisibility() {
-            const items = document.querySelectorAll('ul.timeline li');
             const windowBottom = window.innerHeight;
-            items.forEach(item => {
+            timelineItems.forEach(item => {
                 const rect = item.getBoundingClientRect();
                 if (rect.top < windowBottom - 100 && !item.classList.contains('visible')) {
                     item.classList.add('visible');
@@ -593,18 +565,17 @@
             });
         }
         window.addEventListener('scroll', checkTimelineVisibility);
-        window.addEventListener('load', checkTimelineVisibility);
+        window.addEventListener('load', checkTimelineVisibility); 
 
-        const skillIcons = document.querySelectorAll('.icon');
         skillIcons.forEach(icon => {
             icon.addEventListener('click', () => {
                 icon.classList.remove('jump-effect');
-                void icon.offsetWidth;
+                void icon.offsetWidth; 
                 icon.classList.add('jump-effect');
             });
         });
 
-        document.querySelectorAll('.hover-tilt').forEach(element => {
+        hoverTiltElements.forEach(element => {
             element.addEventListener('mousemove', (e) => {
                 const rect = element.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -621,7 +592,6 @@
                 element.style.setProperty('--rotateY', `0deg`);
             });
         });
-
         document.addEventListener('copy', (event) => {
             const selectedText = window.getSelection().toString();
             if (selectedText.length > 0) {
@@ -656,8 +626,6 @@
             }
         });
 
-        const canvas = document.getElementById('background-canvas');
-        const ctx = canvas.getContext('2d');
         let particles = [];
         const numParticles = 80;
         let mouse = { x: null, y: null };
@@ -672,8 +640,8 @@
         });
 
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            backgroundCanvas.width = window.innerWidth;
+            backgroundCanvas.height = window.innerHeight;
             particles = [];
             for (let i = 0; i < numParticles; i++) {
                 particles.push(new Particle());
@@ -682,8 +650,8 @@
 
         class Particle {
             constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
+                this.x = Math.random() * backgroundCanvas.width;
+                this.y = Math.random() * backgroundCanvas.height;
                 this.size = Math.random() * 1.8 + 0.7;
                 this.baseSpeedX = Math.random() * 0.5 - 0.25;
                 this.baseSpeedY = Math.random() * 0.5 - 0.25;
@@ -696,7 +664,7 @@
                 let distance = Math.sqrt(dx * dx + dy * dy);
                 let forceDirectionX = dx / distance;
                 let forceDirectionY = dy / distance;
-                let maxDistance = canvas.width / 3;
+                let maxDistance = backgroundCanvas.width / 3;
                 let force = (maxDistance - distance) / maxDistance;
 
                 if (distance < maxDistance) {
@@ -707,10 +675,10 @@
                     this.y += this.baseSpeedY;
                 }
 
-                if (this.x > canvas.width) this.x = 0;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0;
-                if (this.y < 0) this.y = canvas.height;
+                if (this.x > backgroundCanvas.width) this.x = 0;
+                if (this.x < 0) this.x = backgroundCanvas.width;
+                if (this.y > backgroundCanvas.height) this.y = 0;
+                if (this.y < 0) this.y = backgroundCanvas.height;
             }
             draw() {
                 ctx.fillStyle = this.color;
@@ -721,13 +689,13 @@
         }
 
         function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
 
             for (let a = 0; a < particles.length; a++) {
                 for (let b = a; b < particles.length; b++) {
                     let distance = ((particles[a].x - particles[b].x) ** 2) + ((particles[a].y - particles[b].y) ** 2);
-                    if (distance < (canvas.width / 6) ** 2) {
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.15 - (distance / ((canvas.width / 6) ** 2)) * 0.15})`;
+                    if (distance < (backgroundCanvas.width / 6) ** 2) {
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.15 - (distance / ((backgroundCanvas.width / 6) ** 2)) * 0.15})`;
                         ctx.lineWidth = 1.2;
                         ctx.beginPath();
                         ctx.moveTo(particles[a].x, particles[a].y);
@@ -747,31 +715,24 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
         animateParticles();
-    });
+        const sections = document.querySelectorAll('.page-section');
+        const sectionColors = ['#0a0a0a', '#100a18', '#0a151f']; 
 
-    const sections = document.querySelectorAll('.page-section');
-    const colors = ['#0a0a0a', '#100a18', '#0a151f', '#18120a'];
-
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.4
-    };
-
-    const sectionObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const sectionIndex = Array.from(sections).indexOf(entry.target);
-                if (colors[sectionIndex]) {
-                    document.body.style.transition = 'background-color 0.6s ease';
-                    document.body.style.backgroundColor = colors[sectionIndex];
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const sectionIndex = Array.from(sections).indexOf(entry.target);
+                    if (sectionColors[sectionIndex]) {
+                        document.body.style.transition = 'background-color 0.6s ease';
+                        document.body.style.backgroundColor = sectionColors[sectionIndex];
+                    }
                 }
-            }
-        });
-    }, observerOptions);
+            });
+        }, { threshold: 0.4 });
 
-    sections.forEach(section => {
-        sectionObserver.observe(section);
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
     });
 </script>
 
